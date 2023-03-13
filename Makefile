@@ -20,7 +20,7 @@ fclean: clean
 
 style:
 	@clang-format -n $(shell find src -type f -name "*.cpp") \
-                     $(shell find src -type f -name "*.h")
+                     $(shell find src -type f -name "*.hpp")
 
 .PHONY: clean fclean style
 
