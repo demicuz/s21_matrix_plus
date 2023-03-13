@@ -1,11 +1,4 @@
 s21matrix+_test
 
-.cache/
-*.json
 *.d
 *.o
-
-.clang-tidy
-
-*.sublime-workspace
-*.sublime-project
