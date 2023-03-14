@@ -36,12 +36,7 @@ S21Matrix::S21Matrix(int rows, int cols) {
   _rows = rows;
   _cols = cols;
 
-  // TODO where do I catch the exception?
-  try {
-    _matrix = new double[static_cast<long>(_rows) * _cols]{};
-  } catch (const std::bad_alloc& e) {
-    std::cerr << "ERROR: S21Matrix: " << e.what() << "\n";
-  }
+  _matrix = new double[static_cast<long>(_rows) * _cols]{};
 
   int min_dim = std::min(_rows, _cols);
   for (int i = 0; i != min_dim; ++i) {
@@ -56,12 +51,7 @@ S21Matrix::S21Matrix(const S21Matrix& other) {
   _rows = other._rows;
   _cols = other._cols;
 
-  try {
-    _matrix = new double[static_cast<long>(_rows) * _cols]{};
-  } catch (const std::bad_alloc& e) {
-    std::cerr << "ERROR: S21Matrix: " << e.what() << "\n";
-  }
-
+  _matrix = new double[static_cast<long>(_rows) * _cols]{};
   std::copy_n(other._matrix, _rows * _cols, _matrix);
 
   std::cout << "copied!\n";
