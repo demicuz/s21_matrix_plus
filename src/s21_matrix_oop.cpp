@@ -25,21 +25,28 @@ int Time::GetMinutes() const { return minutes; }
 
 int Time::GetSeconds() const { return seconds; }
 
-S21Matrix::S21Matrix(unsigned int rows, unsigned int cols) {
+S21Matrix::S21Matrix(int rows, int cols) {
+  if (rows < 0 || cols < 0) {
+    throw std::invalid_argument("S21Matrix: rows or cols less than zero");
+  }
+  if (rows == 0 || cols == 0) {
+    throw std::invalid_argument("S21Matrix: empty matrix");
+  }
+
   _rows = rows;
   _cols = cols;
 
   // TODO where do I catch the exception?
   try {
-    _matrix = new double[static_cast<unsigned long>(_rows) * _cols]{};
+    _matrix = new double[static_cast<long>(_rows) * _cols]{};
   } catch (const std::bad_alloc& e) {
-    std::cerr << "ERROR (S21Matrix): " << e.what() << "\n";
+    std::cerr << "ERROR: S21Matrix: " << e.what() << "\n";
   }
 
-  // Doing unsafe things, and no one's there to stop us!
-  _matrix[0] = 1;
-  _matrix[4] = 1;
-  _matrix[8] = 1;
+  int min_dim = std::min(_rows, _cols);
+  for (int i = 0; i != min_dim; ++i) {
+    _matrix[i * _cols + i] = 1;
+  }
 
   std::cout << "created!\n";
 }
@@ -50,9 +57,9 @@ S21Matrix::S21Matrix(const S21Matrix& other) {
   _cols = other._cols;
 
   try {
-    _matrix = new double[static_cast<unsigned long>(_rows) * _cols]{};
+    _matrix = new double[static_cast<long>(_rows) * _cols]{};
   } catch (const std::bad_alloc& e) {
-    std::cerr << "ERROR (S21Matrix): " << e.what() << "\n";
+    std::cerr << "ERROR: S21Matrix: " << e.what() << "\n";
   }
 
   std::copy_n(other._matrix, _rows * _cols, _matrix);
@@ -78,11 +85,11 @@ S21Matrix::~S21Matrix() {
   std::cout << "destroyed!\n";
 }
 
-void S21Matrix::print() {
+void S21Matrix::print() const {
   std::cout << "[";
-  for (unsigned int i = 0; i != _rows; ++i) {
+  for (int i = 0; i != _rows; ++i) {
     std::cout << "[";
-    for (unsigned int j = 0; j != _cols; ++j) {
+    for (int j = 0; j != _cols; ++j) {
       std::cout << _matrix[i * _cols + j] << ", ";
     }
     std::cout << "], ";

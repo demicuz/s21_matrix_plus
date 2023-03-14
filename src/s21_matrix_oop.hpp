@@ -22,19 +22,20 @@ class Time {
 
 class S21Matrix {
  private:
-  unsigned int _rows = 0;
-  unsigned int _cols = 0;
+  int _rows = 0;
+  int _cols = 0;
   // Could have used std::vector, but that would be too easy!
+  // NOTE: storing in a row-major format
   double* _matrix = nullptr;
 
  public:
   S21Matrix() = default;
-  S21Matrix(unsigned int rows, unsigned int cols);
+  S21Matrix(int rows, int cols);
   S21Matrix(const S21Matrix& other);
   S21Matrix(S21Matrix&& other) noexcept;
   ~S21Matrix();
 
-  void print();
+  void print() const;
 };
 
 // Needed to test the move constructor of S21Matrix
