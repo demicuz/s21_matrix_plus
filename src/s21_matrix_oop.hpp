@@ -35,6 +35,8 @@ class S21Matrix {
   S21Matrix(S21Matrix&& other) noexcept;
   ~S21Matrix();
 
+  double& operator()(int i, int j) const;
+
   void print() const;
 };
 

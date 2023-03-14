@@ -85,6 +85,14 @@ S21Matrix::~S21Matrix() {
   std::cout << "destroyed!\n";
 }
 
+double& S21Matrix::operator()(int i, int j) const {
+  if (i < 0 || j < 0 || i > _rows - 1 || j > _cols - 1) {
+    throw std::out_of_range("S21Matrix: matrix indices out of range");
+  }
+
+  return _matrix[i * _cols + j];
+}
+
 void S21Matrix::print() const {
   std::cout << "[";
   for (int i = 0; i != _rows; ++i) {
