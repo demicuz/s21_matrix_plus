@@ -3,28 +3,6 @@
 #include <iostream>
 #include <algorithm>
 
-Time::Time(int h, int m, int s) {
-  if (s < 0 || s > 59) {
-    throw IncorrectTimeException();
-  }
-  if (m < 0 || m > 59) {
-    throw IncorrectTimeException();
-  }
-  if (h < 0 || h > 23) {
-    throw IncorrectTimeException();
-  }
-
-  hours = h;
-  minutes = m;
-  seconds = s;
-}
-
-int Time::GetHours() const { return hours; }
-
-int Time::GetMinutes() const { return minutes; }
-
-int Time::GetSeconds() const { return seconds; }
-
 S21Matrix::S21Matrix() {
   _rows = 4;
   _cols = 4;
@@ -140,7 +118,7 @@ void S21Matrix::SumMatrix(const S21Matrix& other) {
   }
 
   long n_elements = static_cast<long>(_rows) * _cols;
-  
+
   for (long i = 0; i < n_elements; ++i) {
     _matrix[i] += other._matrix[i];
   }
