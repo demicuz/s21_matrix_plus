@@ -106,6 +106,17 @@ TEST(Function, At) {
   EXPECT_EQ(m.at(0, 0), 123);
 }
 
+TEST(Function, EqMatrix) {
+  S21Matrix m1(2, 3);
+  S21Matrix m2(2, 3);
+  S21Matrix m3(4, 3);
+  EXPECT_TRUE(m1.EqMatrix(m2));
+  EXPECT_FALSE(m1.EqMatrix(m3));
+
+  m2.at(0, 1) = 123;
+  EXPECT_FALSE(m1.EqMatrix(m2));
+}
+
 TEST(Setter, SetRow) {
   S21Matrix m(2, 3);
 

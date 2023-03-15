@@ -117,6 +117,22 @@ double& S21Matrix::operator()(int row, int col) const {
 // https://stackoverflow.com/q/317450
 double& S21Matrix::at(int i, int j) const { return (*this)(i, j); }
 
+bool S21Matrix::EqMatrix(const S21Matrix& other) const {
+  if (_rows != other._rows || _cols != other._cols) {
+    return false;
+  }
+
+  long n_elements = static_cast<long>(_rows) * _cols;
+
+  for (long i = 0; i < n_elements; ++i) {
+    if (_matrix[i] != other._matrix[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 int S21Matrix::GetRows() const { return _rows; }
 
 int S21Matrix::GetCols() const { return _cols; }
