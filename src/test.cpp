@@ -129,6 +129,43 @@ TEST(Function, SumMatrix) {
   EXPECT_THROW(m1.SumMatrix(m3), std::invalid_argument);
 }
 
+TEST(Function, SubMatrix) {
+  S21Matrix m1(2, 3);
+  S21Matrix m2(2, 3);
+
+  m1.SubMatrix(m2);
+  double reference[6] = {0, 0, 0, 0, 0, 0};
+  EXPECT_TRUE(is_matrix_equal(m1, reference));
+
+  S21Matrix m3(3, 3);
+  EXPECT_THROW(m1.SubMatrix(m3), std::invalid_argument);
+}
+
+TEST(Function, MulNumber) {
+  S21Matrix m(2, 3);
+
+  m.MulNumber(42);
+  double reference[6] = {42, 0, 0, 0, 42, 0};
+  EXPECT_TRUE(is_matrix_equal(m, reference));
+}
+
+TEST(Function, MulMatrix) {
+  double *m1_raw = new double[6]{2, 3, 4, 5, 6, 7};
+  double *m2_raw = new double[6]{3, 7, 11, 13, 23, 0};
+
+  S21Matrix m1(m1_raw, 2, 3);
+  S21Matrix m2(m2_raw, 3, 2);
+
+  m1.MulMatrix(m2);
+  EXPECT_EQ(m1.GetRows(), 2);
+  EXPECT_EQ(m1.GetCols(), 2);
+
+  double reference[4] = {131, 53, 242, 113};
+  EXPECT_TRUE(is_matrix_equal(m1, reference));
+
+  EXPECT_THROW(m1.MulMatrix(m2), std::invalid_argument);
+}
+
 TEST(Setter, SetRow) {
   S21Matrix m(2, 3);
 

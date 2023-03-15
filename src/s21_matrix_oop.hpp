@@ -19,12 +19,15 @@ class S21Matrix {
   S21Matrix(S21Matrix&& other) noexcept;
   ~S21Matrix() noexcept;
 
-  double& operator()(int i, int j) const;
+  double& operator()(int row, int col) const;
 
   double& at(int i, int j) const;
 
   bool EqMatrix(const S21Matrix& other) const;
   void SumMatrix(const S21Matrix& other);
+  void SubMatrix(const S21Matrix& other);
+  void MulNumber(double num) noexcept;
+  void MulMatrix(const S21Matrix& other);
 
   int GetRows() const;
   int GetCols() const;

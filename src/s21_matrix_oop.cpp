@@ -124,6 +124,47 @@ void S21Matrix::SumMatrix(const S21Matrix& other) {
   }
 }
 
+void S21Matrix::SubMatrix(const S21Matrix& other) {
+  if (_rows != other._rows || _cols != other._cols) {
+    throw std::invalid_argument("S21Matrix: different matrix dimensions");
+  }
+
+  long n_elements = static_cast<long>(_rows) * _cols;
+
+  for (long i = 0; i < n_elements; ++i) {
+    _matrix[i] -= other._matrix[i];
+  }
+}
+
+void S21Matrix::MulNumber(const double num) noexcept {
+  long n_elements = static_cast<long>(_rows) * _cols;
+
+  for (long i = 0; i < n_elements; ++i) {
+    _matrix[i] *= num;
+  }
+}
+
+void S21Matrix::MulMatrix(const S21Matrix& other) {
+  if (_cols != other._rows) {
+    throw std::invalid_argument(
+        "S21Matrix: can't multiply matrices with such dimensions");
+  }
+
+  double* result = new double[static_cast<long>(_rows) * other._cols]{};
+
+  for (int i = 0; i < _rows; ++i) {
+    for (int j = 0; j < other._cols; ++j) {
+      for (int k = 0; k < _cols; ++k) {
+        result[i * other._cols + j] +=
+            _matrix[i * _cols + k] * other._matrix[k * other._cols + j];
+      }
+    }
+  }
+
+  _cols = other._cols;
+  _matrix = result;
+}
+
 int S21Matrix::GetRows() const { return _rows; }
 
 int S21Matrix::GetCols() const { return _cols; }
