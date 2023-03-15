@@ -22,20 +22,23 @@ class Time {
 
 class S21Matrix {
  private:
-  int _rows = 0;
-  int _cols = 0;
+  int _rows = 4;
+  int _cols = 4;
   // Could have used std::vector, but that would be too easy!
   // NOTE: storing in a row-major format
-  double* _matrix = nullptr;
+  double* _matrix = new double[16]{};
 
  public:
   S21Matrix() = default;
   S21Matrix(int rows, int cols);
+  S21Matrix(const double matrix[], int rows, int cols);
   S21Matrix(const S21Matrix& other);
   S21Matrix(S21Matrix&& other) noexcept;
-  ~S21Matrix();
+  ~S21Matrix() noexcept;
 
   double& operator()(int i, int j) const;
+
+  double& at(int i, int j) const;
 
   void print() const;
 };

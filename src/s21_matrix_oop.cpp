@@ -43,7 +43,26 @@ S21Matrix::S21Matrix(int rows, int cols) {
     _matrix[i * _cols + i] = 1;
   }
 
-  std::cout << "created!\n";
+  // std::cout << "created!\n";
+}
+
+// The caller MUST provide correct matrix, rows and cols
+S21Matrix::S21Matrix(const double* matrix, int rows, int cols) {
+  if (matrix == nullptr) {
+    throw std::invalid_argument("S21Matrix: can't create matrix from nullptr");
+  }
+  if (rows < 0 || cols < 0) {
+    throw std::invalid_argument("S21Matrix: rows or cols less than zero");
+  }
+  if (rows == 0 || cols == 0) {
+    throw std::invalid_argument("S21Matrix: empty matrix");
+  }
+
+  _rows = rows;
+  _cols = cols;
+  _matrix = (double*)matrix;
+
+  // std::cout << "created!\n";
 }
 
 // Copy constructor
@@ -54,7 +73,7 @@ S21Matrix::S21Matrix(const S21Matrix& other) {
   _matrix = new double[static_cast<long>(_rows) * _cols]{};
   std::copy_n(other._matrix, _rows * _cols, _matrix);
 
-  std::cout << "copied!\n";
+  // std::cout << "copied!\n";
 }
 
 // Move constructor
@@ -67,12 +86,13 @@ S21Matrix::S21Matrix(S21Matrix&& other) noexcept {
   // other._cols = 0;
   other._matrix = nullptr;
 
-  std::cout << "moved!\n";
+  // std::cout << "moved!\n";
 }
 
-S21Matrix::~S21Matrix() {
+// Destructor
+S21Matrix::~S21Matrix() noexcept {
   delete[] _matrix;
-  std::cout << "destroyed!\n";
+  // std::cout << "destroyed!\n";
 }
 
 double& S21Matrix::operator()(int i, int j) const {
@@ -83,6 +103,11 @@ double& S21Matrix::operator()(int i, int j) const {
   return _matrix[i * _cols + j];
 }
 
+// Because using operator() for indexing is stupid
+// https://stackoverflow.com/q/317450
+double& S21Matrix::at(int i, int j) const { return (*this)(i, j); }
+
+// TODO probably remove this
 void S21Matrix::print() const {
   std::cout << "[";
   for (int i = 0; i != _rows; ++i) {
