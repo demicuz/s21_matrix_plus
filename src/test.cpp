@@ -41,3 +41,111 @@ TEST(Constructor, RowsCols) {
 
   EXPECT_TRUE(is_matrix_equal(m, identity_2_by_3));
 }
+
+TEST(Constructor, PreAllocatedMatrix) {
+  double *m_raw =
+      new double[16]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16};
+  S21Matrix m(m_raw, 4, 4);
+
+  EXPECT_EQ(m.GetRows(), 4);
+  EXPECT_EQ(m.GetCols(), 4);
+
+  EXPECT_TRUE(is_matrix_equal(m, m_raw));
+}
+
+TEST(Constructor, Copy) {
+  S21Matrix m1(2, 3);
+  S21Matrix m2 = m1;
+
+  EXPECT_EQ(m2.GetRows(), 2);
+  EXPECT_EQ(m2.GetCols(), 3);
+
+  m1.at(0, 0) = 123;
+
+  EXPECT_TRUE(is_matrix_equal(m2, identity_2_by_3));
+
+  m2.at(0, 0) = 42;
+  const double reference[6] = {42, 0, 0, 0, 1, 0};
+  EXPECT_TRUE(is_matrix_equal(m2, reference));
+}
+
+TEST(Constructor, Move) {
+  S21Matrix m1(2, 3);
+  S21Matrix m2 = m1;
+  S21Matrix m3(std::move(m1));
+
+  EXPECT_EQ(m1.GetRaw(), nullptr);
+  EXPECT_NE(m2.GetRaw(), m3.GetRaw());
+
+  EXPECT_EQ(m2.GetRows(), 2);
+  EXPECT_EQ(m2.GetCols(), 3);
+
+  EXPECT_EQ(m3.GetRows(), 2);
+  EXPECT_EQ(m3.GetCols(), 3);
+}
+
+TEST(Operator, Parenthesis) {
+  S21Matrix m(2, 3);
+
+  EXPECT_EQ(m(1, 1), 1);
+  EXPECT_EQ(m(1, 0), 0);
+
+  m(0, 0) = 123;
+
+  EXPECT_EQ(m(0, 0), 123);
+}
+
+TEST(Function, At) {
+  S21Matrix m(2, 3);
+
+  EXPECT_EQ(m.at(1, 1), 1);
+  EXPECT_EQ(m.at(1, 0), 0);
+
+  m.at(0, 0) = 123;
+
+  EXPECT_EQ(m.at(0, 0), 123);
+}
+
+TEST(Setter, SetRow) {
+  S21Matrix m(2, 3);
+
+  m.SetRows(3);
+  EXPECT_EQ(m.GetRows(), 3);
+  EXPECT_EQ(m.GetCols(), 3);
+
+  double reference1[9] = {1, 0, 0, 0, 1, 0, 0, 0, 0};
+  EXPECT_TRUE(is_matrix_equal(m, reference1));
+
+  m.at(2, 2) = 123;
+  reference1[8] = 123;
+  EXPECT_TRUE(is_matrix_equal(m, reference1));
+
+  m.SetRows(1);
+  EXPECT_EQ(m.GetRows(), 1);
+  EXPECT_EQ(m.GetCols(), 3);
+
+  double reference2[3] = {1, 0, 0};
+  EXPECT_TRUE(is_matrix_equal(m, reference2));
+}
+
+TEST(Setter, SetCol) {
+  S21Matrix m(3, 2);
+
+  m.SetCols(3);
+  EXPECT_EQ(m.GetRows(), 3);
+  EXPECT_EQ(m.GetCols(), 3);
+
+  double reference1[9] = {1, 0, 0, 0, 1, 0, 0, 0, 0};
+  EXPECT_TRUE(is_matrix_equal(m, reference1));
+
+  m.at(1, 2) = 123;
+  reference1[5] = 123;
+  EXPECT_TRUE(is_matrix_equal(m, reference1));
+
+  m.SetCols(1);
+  EXPECT_EQ(m.GetRows(), 3);
+  EXPECT_EQ(m.GetCols(), 1);
+
+  double reference2[3] = {1, 0, 0};
+  EXPECT_TRUE(is_matrix_equal(m, reference2));
+}
