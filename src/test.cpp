@@ -22,6 +22,8 @@ bool is_matrix_equal(const S21Matrix &m, const double *reference) {
 const double identity_4_by_4[16] = {1, 0, 0, 0, 0, 1, 0, 0,
                                     0, 0, 1, 0, 0, 0, 0, 1};
 
+const double identity_2_by_3[6] = {1, 0, 0, 0, 1, 0};
+
 TEST(Constructor, Default) {
   S21Matrix m;
 
@@ -29,4 +31,13 @@ TEST(Constructor, Default) {
   EXPECT_EQ(m.GetCols(), 4);
 
   EXPECT_TRUE(is_matrix_equal(m, identity_4_by_4));
+}
+
+TEST(Constructor, RowsCols) {
+  S21Matrix m(2, 3);
+
+  EXPECT_EQ(m.GetRows(), 2);
+  EXPECT_EQ(m.GetCols(), 3);
+
+  EXPECT_TRUE(is_matrix_equal(m, identity_2_by_3));
 }

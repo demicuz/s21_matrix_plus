@@ -105,12 +105,12 @@ S21Matrix::~S21Matrix() noexcept {
   // std::cout << "destroyed!\n";
 }
 
-double& S21Matrix::operator()(int i, int j) const {
-  if (i < 0 || j < 0 || i > _rows - 1 || j > _cols - 1) {
+double& S21Matrix::operator()(int row, int col) const {
+  if (row < 0 || col < 0 || row > _rows - 1 || col > _cols - 1) {
     throw std::out_of_range("S21Matrix: matrix indices out of range");
   }
 
-  return _matrix[i * _cols + j];
+  return _matrix[row * _cols + col];
 }
 
 // Because using operator() for indexing is stupid
@@ -167,10 +167,10 @@ void S21Matrix::SetCols(int new_cols) {
 // TODO probably remove this
 void S21Matrix::print() const {
   std::cout << "[";
-  for (int i = 0; i != _rows; ++i) {
+  for (int i = 0; i != _cols; ++i) {
     std::cout << "[";
-    for (int j = 0; j != _cols; ++j) {
-      std::cout << _matrix[i * _cols + j] << ", ";
+    for (int j = 0; j != _rows; ++j) {
+      std::cout << _matrix[j * _cols + i] << ", ";
     }
     std::cout << "], ";
   }
