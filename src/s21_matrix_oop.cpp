@@ -174,10 +174,10 @@ void S21Matrix::SetCols(int new_cols) {
 // TODO probably remove this
 void S21Matrix::print() const {
   std::cout << "[";
-  for (int i = 0; i != _cols; ++i) {
+  for (int i = 0; i != _rows; ++i) {
     std::cout << "[";
-    for (int j = 0; j != _rows; ++j) {
-      std::cout << _matrix[j * _cols + i] << ", ";
+    for (int j = 0; j != _cols; ++j) {
+      std::cout << _matrix[i * _cols + j] << ", ";
     }
     std::cout << "], ";
   }
