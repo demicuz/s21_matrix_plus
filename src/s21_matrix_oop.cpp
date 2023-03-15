@@ -124,6 +124,7 @@ bool S21Matrix::EqMatrix(const S21Matrix& other) const {
 
   long n_elements = static_cast<long>(_rows) * _cols;
 
+  // TODO maybe try to use iterators instead of raw loops?
   for (long i = 0; i < n_elements; ++i) {
     if (_matrix[i] != other._matrix[i]) {
       return false;
@@ -131,6 +132,18 @@ bool S21Matrix::EqMatrix(const S21Matrix& other) const {
   }
 
   return true;
+}
+
+void S21Matrix::SumMatrix(const S21Matrix& other) {
+  if (_rows != other._rows || _cols != other._cols) {
+    throw std::invalid_argument("S21Matrix: different matrix dimensions");
+  }
+
+  long n_elements = static_cast<long>(_rows) * _cols;
+  
+  for (long i = 0; i < n_elements; ++i) {
+    _matrix[i] += other._matrix[i];
+  }
 }
 
 int S21Matrix::GetRows() const { return _rows; }

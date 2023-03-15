@@ -41,6 +41,7 @@ class S21Matrix {
   double& at(int i, int j) const;
 
   bool EqMatrix(const S21Matrix& other) const;
+  void SumMatrix(const S21Matrix& other);
 
   int GetRows() const;
   int GetCols() const;

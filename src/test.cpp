@@ -117,6 +117,18 @@ TEST(Function, EqMatrix) {
   EXPECT_FALSE(m1.EqMatrix(m2));
 }
 
+TEST(Function, SumMatrix) {
+  S21Matrix m1(2, 3);
+  S21Matrix m2(2, 3);
+
+  m1.SumMatrix(m2);
+  double reference[6] = {2, 0, 0, 0, 2, 0};
+  EXPECT_TRUE(is_matrix_equal(m1, reference));
+
+  S21Matrix m3(3, 3);
+  EXPECT_THROW(m1.SumMatrix(m3), std::invalid_argument);
+}
+
 TEST(Setter, SetRow) {
   S21Matrix m(2, 3);
 
