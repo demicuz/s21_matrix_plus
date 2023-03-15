@@ -29,7 +29,7 @@ class S21Matrix {
   double* _matrix = new double[16]{};
 
  public:
-  S21Matrix() = default;
+  S21Matrix();
   S21Matrix(int rows, int cols);
   S21Matrix(const double matrix[], int rows, int cols);
   S21Matrix(const S21Matrix& other);
@@ -39,6 +39,12 @@ class S21Matrix {
   double& operator()(int i, int j) const;
 
   double& at(int i, int j) const;
+
+  int GetRows() const;
+  int GetCols() const;
+  double* GetRaw() const;
+  void SetRows(int rows);
+  void SetCols(int cols);
 
   void print() const;
 };
