@@ -1,34 +1,27 @@
-NAME		:= s21matrix+_test
 LIB_NAME	:= s21_matrix_oop.a
 
-# TODO set correct flags
 CXX			:= g++ -fdiagnostics-color=always
 CPPFLAGS	:= -MMD -MP
-CXXFLAGS	:= --std=c++17 -pedantic -g -Wall -Wextra#-Werror
+CXXFLAGS	:= --std=c++17 -pedantic -O2 -Wall -Wextra -Werror
 
 BUILD_DIR	:= build
 
-# TODO remove main.cpp
-SRC			:= src/s21_matrix_oop.cpp src/main.cpp
+SRC			:= src/s21_matrix_oop.cpp
 OBJ			:= $(SRC:.cpp=.o)
 
-# TODO correct all
-all: $(NAME)
+all: $(LIB_NAME)
 
-$(NAME): $(OBJ)
-	$(CXX) $^ -o $@
-
-# TODO use $(OBJ) when main.cpp is removed
-$(LIB_NAME): src/s21_matrix_oop.o
+$(LIB_NAME): $(OBJ)
 	@ar rcs $@ $^
+	@echo "Created $(LIB_NAME)"
 
 clean:
 	@rm -vf $(OBJ)
+	@rm -vf $(OBJ:.o=.d)
 
 fclean: clean
 	@rm -vf $(NAME)
 	@rm -vf $(LIB_NAME)
-	@rm -vf $(OBJ:.o=.d)
 	@rm -rvf $(BUILD_DIR)
 
 test: | $(BUILD_DIR)

@@ -1,5 +1,5 @@
-s21matrix+_test
 build/
 
 *.d
 *.o
+*.a
