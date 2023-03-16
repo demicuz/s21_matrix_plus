@@ -166,6 +166,29 @@ TEST(Function, MulMatrix) {
   EXPECT_THROW(m1.MulMatrix(m2), std::invalid_argument);
 }
 
+TEST(Function, Transpose) {
+  double *m_raw = new double[6]{2, 3, 4, 5, 6, 7};
+
+  S21Matrix m(m_raw, 2, 3);
+
+  S21Matrix transposed = m.Transpose();
+  EXPECT_EQ(transposed.GetRows(), 3);
+  EXPECT_EQ(transposed.GetCols(), 2);
+
+  double reference[6] = {2, 5, 3, 6, 4, 7};
+  EXPECT_TRUE(is_matrix_equal(transposed, reference));
+}
+
+TEST(Function, Determinant) {
+  double *m_raw = new double[9]{1, 2, -3, 4, -5, 6, 7, 8, -9};
+
+  S21Matrix m(m_raw, 3, 3);
+  EXPECT_TRUE(almost_equal(m.Determinant(), -48));
+
+  m.SetRows(2);
+  EXPECT_THROW(m.Determinant(), std::invalid_argument);
+}
+
 TEST(Setter, SetRow) {
   S21Matrix m(2, 3);
 

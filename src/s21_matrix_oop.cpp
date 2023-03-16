@@ -165,6 +165,71 @@ void S21Matrix::MulMatrix(const S21Matrix& other) {
   _matrix = result;
 }
 
+S21Matrix S21Matrix::Transpose() const {
+  S21Matrix transposed(_cols, _rows);
+
+  for (int i = 0; i < _rows; ++i) {
+    for (int j = 0; j < _cols; ++j) {
+      transposed.at(j, i) = _matrix[i * _cols + j];
+    }
+  }
+
+  return transposed;
+}
+
+// don't ask
+void S21Matrix::subMatrix(const double* mat, double* tmp, int p, int q, int n) const {
+  int i = 0;
+  int j = 0;
+
+  for (int row = 0; row < n; ++row) {
+    for (int col = 0; col < n; ++col) {
+      if (row != p && col != q) {
+        tmp[i * (n - 1) + j] = mat[row * n + col];
+        j++;
+        if (j == n - 1) {
+          j = 0;
+          i++;
+        }
+      }
+    }
+  }
+}
+
+// Copied from:
+// https://www.tutorialspoint.com/determinant-of-a-matrix-in-cplusplus-program
+// I needed it to "just work".
+double S21Matrix::det(const double* mat, int n) const {
+  double determinant = 0;
+  if (n == 1) return mat[0];
+  if (n == 2) return mat[0] * mat[3] - mat[1] * mat[2];
+
+  double* tmp = new double[static_cast<unsigned long>(n - 1) * (n - 1)]{};
+  int sign = 1;
+  for (int i = 0; i < n; ++i) {
+    subMatrix(mat, tmp, 0, i, n);
+    determinant += sign * mat[i] * det(tmp, n - 1);
+    sign = -sign;
+  }
+
+  delete[] tmp;
+  return determinant;
+}
+
+double S21Matrix::Determinant() const {
+  if (_rows != _cols) {
+    throw std::invalid_argument("S21Matrix: not a square matrix");
+  }
+
+  return det(_matrix, _rows);
+}
+
+// S21Matrix S21Matrix::CalcComplements() const {
+//   if (_rows != _cols) {
+//     throw std::invalid_argument("S21Matrix: not a square matrix");
+//   }
+// }
+
 int S21Matrix::GetRows() const { return _rows; }
 
 int S21Matrix::GetCols() const { return _cols; }

@@ -11,6 +11,10 @@ class S21Matrix {
   // NOTE: storing in a row-major format
   double* _matrix = new double[16]{};
 
+  // Some helper computation functions
+  void subMatrix(const double* mat, double* tmp, int p, int q, int n) const;
+  double det(const double* mat, int n) const;
+
  public:
   S21Matrix();
   S21Matrix(int rows, int cols);
@@ -28,6 +32,9 @@ class S21Matrix {
   void SubMatrix(const S21Matrix& other);
   void MulNumber(double num) noexcept;
   void MulMatrix(const S21Matrix& other);
+  S21Matrix Transpose() const;
+  double Determinant() const;
+  S21Matrix CalcComplements() const;
 
   int GetRows() const;
   int GetCols() const;
