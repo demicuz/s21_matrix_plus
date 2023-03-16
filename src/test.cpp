@@ -2,9 +2,9 @@
 
 #include <gtest/gtest.h>
 
-const double EPSILLON = 1e-7;
+const double EPSILON = 1e-7;
 
-bool almost_equal(double a, double b) { return abs(a - b) < EPSILLON; }
+bool almost_equal(double a, double b) { return abs(a - b) < EPSILON; }
 
 bool is_matrix_equal(const S21Matrix &m, const double *reference) {
   const double *m_raw = m.GetRaw();
