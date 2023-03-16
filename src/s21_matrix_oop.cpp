@@ -2,6 +2,16 @@
 
 #include <iostream>
 #include <algorithm>
+#include <cmath>
+
+// TODO more comprehensive exception messages?
+// I thought the call stack is printed to stderr, but that's not the case,
+// which is weird.
+// TODO fix wasteful exceptions?
+// Take a look at CalcComplements(), for example. It throws. It calls to,
+// Minor(), which also throws. Minor() calls to Determinant(), which also
+// throws. Does the compiler optimize all this stuff? Otherwise, it's kinda
+// wasteful.
 
 S21Matrix::S21Matrix() {
   _rows = 4;
@@ -178,12 +188,14 @@ S21Matrix S21Matrix::Transpose() const {
 }
 
 // don't ask
-void S21Matrix::subMatrix(const double* mat, double* tmp, int q, int n) const {
+void S21Matrix::subMatrix(const double* mat, double* tmp, int row_to_skip,
+                          int col_to_skip, int n) const {
   int i = 0;
 
-  for (int row = 1; row < n; ++row) {
+  for (int row = 0; row < n; ++row) {
+    if (row == row_to_skip) continue;
     for (int col = 0; col < n; ++col) {
-      if (col == q) continue;
+      if (col == col_to_skip) continue;
       // Row-major, remember. We're just filling tmp[] row by row.
       tmp[i] = mat[row * n + col];
       i++;
@@ -202,7 +214,7 @@ double S21Matrix::det(const double* mat, int n) const {
   double* tmp = new double[static_cast<unsigned long>(n - 1) * (n - 1)]{};
   int sign = 1;
   for (int i = 0; i < n; ++i) {
-    subMatrix(mat, tmp, i, n);
+    subMatrix(mat, tmp, 0, i, n);
     determinant += sign * mat[i] * det(tmp, n - 1);
     sign = -sign;
   }
@@ -213,17 +225,62 @@ double S21Matrix::det(const double* mat, int n) const {
 
 double S21Matrix::Determinant() const {
   if (_rows != _cols) {
-    throw std::invalid_argument("S21Matrix: not a square matrix");
+    throw std::logic_error("S21Matrix: not a square matrix");
   }
 
   return det(_matrix, _rows);
 }
 
-// S21Matrix S21Matrix::CalcComplements() const {
-//   if (_rows != _cols) {
-//     throw std::invalid_argument("S21Matrix: not a square matrix");
-//   }
-// }
+double S21Matrix::Minor(int row, int col) const {
+  if (row < 0 || col < 0 || row > _rows - 1 || col > _cols - 1) {
+    throw std::out_of_range("S21Matrix: matrix indices out of range");
+  }
+  if (_rows != _cols) {
+    throw std::logic_error("S21Matrix: not a square matrix");
+  }
+
+  int n = _rows;
+
+  double* tmp = new double[static_cast<unsigned long>(n - 1) * (n - 1)]{};
+  subMatrix(_matrix, tmp, row, col, n);
+
+  double minor = det(tmp, n - 1);
+  delete[] tmp;
+  return minor;
+}
+
+S21Matrix S21Matrix::CalcComplements() const {
+  if (_rows != _cols) {
+    throw std::logic_error("S21Matrix: not a square matrix");
+  }
+
+  int n = _rows;
+  double* complements = new double[static_cast<unsigned long>(n) * n];
+
+  for (int row = 0; row < n; ++row) {
+    for (int col = 0; col < n; ++col) {
+      int sign = (row + col) % 2 == 0 ? 1 : -1;
+      complements[row * n + col] = sign * Minor(row, col);
+    }
+  }
+
+  return S21Matrix(complements, n, n);
+}
+
+S21Matrix S21Matrix::InverseMatrix() const {
+  if (_rows != _cols) {
+    throw std::logic_error("S21Matrix: not a square matrix");
+  }
+
+  double determinant = Determinant();
+  if (std::fabs(determinant) < 1e-7) {
+    throw std::logic_error("S21Matrix: a singular matrix");
+  }
+
+  S21Matrix inverse = CalcComplements().Transpose();
+  inverse.MulNumber(1 / determinant);
+  return inverse;
+}
 
 int S21Matrix::GetRows() const { return _rows; }
 

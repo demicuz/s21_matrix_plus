@@ -1,10 +1,11 @@
 #include "s21_matrix_oop.hpp"
 
+#include <cmath>
 #include <gtest/gtest.h>
 
 const double EPSILON = 1e-7;
 
-bool almost_equal(double a, double b) { return abs(a - b) < EPSILON; }
+bool almost_equal(double a, double b) { return std::fabs(a - b) < EPSILON; }
 
 bool is_matrix_equal(const S21Matrix &m, const double *reference) {
   const double *m_raw = m.GetRaw();
@@ -186,7 +187,46 @@ TEST(Function, Determinant) {
   EXPECT_TRUE(almost_equal(m.Determinant(), -48));
 
   m.SetRows(2);
-  EXPECT_THROW(m.Determinant(), std::invalid_argument);
+  EXPECT_THROW(m.Determinant(), std::logic_error);
+}
+
+TEST(Function, Minor) {
+  double *m_raw = new double[9]{2, 2, 1, 7, 8, 2, 5, 3, 2};
+
+  S21Matrix m(m_raw, 3, 3);
+  EXPECT_TRUE(almost_equal(m.Minor(0, 1), 4));
+  EXPECT_THROW(m.Minor(42, 0), std::out_of_range);
+
+  m.SetRows(2);
+  EXPECT_THROW(m.Minor(0, 1), std::logic_error);
+}
+
+TEST(Function, CalcComplements) {
+  double *m_raw = new double[9]{2, 2, 1, 7, 8, 2, 5, 3, 2};
+
+  S21Matrix m(m_raw, 3, 3);
+  S21Matrix complements = m.CalcComplements();
+  double reference[9] = {10, -4, -19, -1, -1, 4, -4, 3, 2};
+  EXPECT_TRUE(is_matrix_equal(complements, reference));
+
+  m.SetRows(2);
+  EXPECT_THROW(m.CalcComplements(), std::logic_error);
+}
+
+TEST(Function, Inverse) {
+  double *m_raw = new double[9]{2, 2, 1, 7, 8, 2, 5, 3, 2};
+
+  S21Matrix m1(m_raw, 3, 3);
+  S21Matrix inverse = m1.InverseMatrix();
+  double reference[9] = {-10.0 / 7, 1.0 / 7,  4.0 / 7,  4.0 / 7, 1.0 / 7,
+                         -3.0 / 7,  19.0 / 7, -4.0 / 7, -2.0 / 7};
+  EXPECT_TRUE(is_matrix_equal(inverse, reference));
+
+  m1.SetRows(2);
+  EXPECT_THROW(m1.InverseMatrix(), std::logic_error);
+
+  S21Matrix m2(3, 3);
+  EXPECT_THROW(m1.InverseMatrix(), std::logic_error);
 }
 
 TEST(Setter, SetRow) {
