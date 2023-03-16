@@ -178,20 +178,15 @@ S21Matrix S21Matrix::Transpose() const {
 }
 
 // don't ask
-void S21Matrix::subMatrix(const double* mat, double* tmp, int p, int q, int n) const {
+void S21Matrix::subMatrix(const double* mat, double* tmp, int q, int n) const {
   int i = 0;
-  int j = 0;
 
-  for (int row = 0; row < n; ++row) {
+  for (int row = 1; row < n; ++row) {
     for (int col = 0; col < n; ++col) {
-      if (row != p && col != q) {
-        tmp[i * (n - 1) + j] = mat[row * n + col];
-        j++;
-        if (j == n - 1) {
-          j = 0;
-          i++;
-        }
-      }
+      if (col == q) continue;
+      // Row-major, remember. We're just filling tmp[] row by row.
+      tmp[i] = mat[row * n + col];
+      i++;
     }
   }
 }
@@ -207,7 +202,7 @@ double S21Matrix::det(const double* mat, int n) const {
   double* tmp = new double[static_cast<unsigned long>(n - 1) * (n - 1)]{};
   int sign = 1;
   for (int i = 0; i < n; ++i) {
-    subMatrix(mat, tmp, 0, i, n);
+    subMatrix(mat, tmp, i, n);
     determinant += sign * mat[i] * det(tmp, n - 1);
     sign = -sign;
   }

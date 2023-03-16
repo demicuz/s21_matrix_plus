@@ -12,7 +12,7 @@ class S21Matrix {
   double* _matrix = new double[16]{};
 
   // Some helper computation functions
-  void subMatrix(const double* mat, double* tmp, int p, int q, int n) const;
+  void subMatrix(const double* mat, double* tmp, int q, int n) const;
   double det(const double* mat, int n) const;
 
  public:
