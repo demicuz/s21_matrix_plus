@@ -1,4 +1,5 @@
 LIB_NAME	:= s21_matrix_oop.a
+EXE_NAME	:= s21_matrix
 
 CXX			:= g++ -fdiagnostics-color=always
 CPPFLAGS	:= -MMD -MP
@@ -10,6 +11,9 @@ SRC			:= src/s21_matrix_oop.cpp
 OBJ			:= $(SRC:.cpp=.o)
 
 all: $(LIB_NAME)
+
+$(EXE_NAME): $(OBJ) src/main.o
+	$(CXX) $^ -o $@
 
 $(LIB_NAME): $(OBJ)
 	@ar rcs $@ $^
