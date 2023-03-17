@@ -1,3 +1,5 @@
+// By no way these tests are exhaustive. I just had to create *some* tests.
+
 #include "s21_matrix_oop.hpp"
 
 #include <cmath>

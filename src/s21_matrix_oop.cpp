@@ -44,7 +44,8 @@ S21Matrix::S21Matrix(int rows, int cols) {
   // std::cout << "created!\n";
 }
 
-// The caller MUST provide correct matrix, rows and cols
+// The caller MUST provide correct matrix, rows and cols. Because we have no way
+// to tell if matrix has exactly rows * cols * sizeof(double) allocated memory.
 S21Matrix::S21Matrix(const double* matrix, int rows, int cols) {
   if (matrix == nullptr) {
     throw std::invalid_argument("S21Matrix: can't create matrix from nullptr");
