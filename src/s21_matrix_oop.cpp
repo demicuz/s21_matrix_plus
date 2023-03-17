@@ -93,6 +93,56 @@ S21Matrix::~S21Matrix() noexcept {
   // std::cout << "destroyed!\n";
 }
 
+S21Matrix& S21Matrix::operator+=(const S21Matrix& rhs) {
+  SumMatrix(rhs);
+  return *this;
+}
+
+S21Matrix& S21Matrix::operator-=(const S21Matrix& rhs) {
+  SubMatrix(rhs);
+  return *this;
+}
+
+S21Matrix& S21Matrix::operator*=(const S21Matrix& rhs) {
+  MulMatrix(rhs);
+  return *this;
+}
+
+S21Matrix& S21Matrix::operator*=(double rhs) {
+  MulNumber(rhs);
+  return *this;
+}
+
+S21Matrix S21Matrix::operator+(const S21Matrix& rhs) const {
+  S21Matrix sum = *this;
+  sum += rhs;
+  return sum;
+}
+
+S21Matrix S21Matrix::operator-(const S21Matrix& rhs) const {
+  S21Matrix sum = *this;
+  sum -= rhs;
+  return sum;
+}
+
+S21Matrix S21Matrix::operator*(const S21Matrix& rhs) const {
+  S21Matrix sum = *this;
+  sum *= rhs;
+  return sum;
+}
+
+S21Matrix S21Matrix::operator*(double rhs) const {
+  S21Matrix sum = *this;
+  sum *= rhs;
+  return sum;
+}
+
+bool S21Matrix::operator==(const S21Matrix& rhs) const { return EqMatrix(rhs); }
+
+bool S21Matrix::operator!=(const S21Matrix& rhs) const {
+  return !EqMatrix(rhs);
+}
+
 double& S21Matrix::operator()(int row, int col) const {
   if (row < 0 || col < 0 || row > _rows - 1 || col > _cols - 1) {
     throw std::out_of_range("S21Matrix: matrix indices out of range");
@@ -103,7 +153,7 @@ double& S21Matrix::operator()(int row, int col) const {
 
 // Because using operator() for indexing is stupid
 // https://stackoverflow.com/q/317450
-double& S21Matrix::at(int i, int j) const { return (*this)(i, j); }
+double& S21Matrix::at(int row, int col) const { return (*this)(row, col); }
 
 bool S21Matrix::EqMatrix(const S21Matrix& other) const {
   if (_rows != other._rows || _cols != other._cols) {

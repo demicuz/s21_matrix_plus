@@ -229,6 +229,108 @@ TEST(Function, Inverse) {
   EXPECT_THROW(m1.InverseMatrix(), std::logic_error);
 }
 
+TEST(Operator, Plus) {
+  double *m_raw1 = new double[4]{1, 2, 3, 4};
+  double *m_raw2 = new double[4]{41, 42, 43, 44};
+
+  S21Matrix m1(m_raw1, 2, 2);
+  S21Matrix m2(m_raw2, 2, 2);
+
+  S21Matrix m3 = m1 + m2;
+  double reference[4] = {42, 44, 46, 48};
+  EXPECT_TRUE(is_matrix_equal(m3, reference));
+
+  m1 += m2;
+  EXPECT_TRUE(is_matrix_equal(m1, reference));
+
+  m1.SetRows(3);
+  EXPECT_THROW({ m1 += m2; }, std::invalid_argument);
+  EXPECT_THROW({ S21Matrix m4 = m1 + m2; }, std::invalid_argument);
+}
+
+TEST(Operator, Minus) {
+  double *m_raw1 = new double[4]{41, 42, 43, 44};
+  double *m_raw2 = new double[4]{1, 5, 10, 15};
+
+  S21Matrix m1(m_raw1, 2, 2);
+  S21Matrix m2(m_raw2, 2, 2);
+
+  S21Matrix m3 = m1 - m2;
+  double reference[4] = {40, 37, 33, 29};
+  EXPECT_TRUE(is_matrix_equal(m3, reference));
+
+  m1 -= m2;
+  EXPECT_TRUE(is_matrix_equal(m1, reference));
+
+  m1.SetRows(3);
+  EXPECT_THROW({ m1 -= m2; }, std::invalid_argument);
+  EXPECT_THROW({ S21Matrix m4 = m1 - m2; }, std::invalid_argument);
+}
+
+TEST(Operator, MultiplyByNumber) {
+  // By a matrix
+  double *m_raw = new double[4]{1, -2, 3, -4};
+
+  S21Matrix m1(m_raw, 2, 2);
+
+  S21Matrix m2 = m1 * 2;
+  double reference[4] = {2, -4, 6, -8};
+  EXPECT_TRUE(is_matrix_equal(m2, reference));
+
+  m1 *= 2;
+  EXPECT_TRUE(is_matrix_equal(m1, reference));
+}
+
+TEST(Operator, MultiplyByMatrix) {
+  // By a matrix
+  double *m_raw1 = new double[4]{1, 2, 3, 4};
+  double *m_raw2 = new double[4]{-3, 4, -5, 6};
+
+  S21Matrix m1(m_raw1, 2, 2);
+  S21Matrix m2(m_raw2, 2, 2);
+
+  S21Matrix m3 = m1 * m2;
+  double reference[4] = {-13, 16, -29, 36};
+  EXPECT_TRUE(is_matrix_equal(m3, reference));
+
+  m1 *= m2;
+  EXPECT_TRUE(is_matrix_equal(m1, reference));
+
+  m1.SetCols(3);
+  EXPECT_THROW({ m1 *= m2; }, std::invalid_argument);
+  EXPECT_THROW({ S21Matrix m4 = m1 * m2; }, std::invalid_argument);
+}
+
+TEST(Logic, Equal) {
+  double *m1_raw = new double[4]{1, -2, 3, -4};
+  double *m2_raw = new double[4]{1, 2, 3, 4};
+  S21Matrix m1(m1_raw, 2, 2);
+  S21Matrix m2(m2_raw, 2, 2);
+  S21Matrix m3 = m1;
+
+  EXPECT_FALSE(m1 == m2);
+  EXPECT_TRUE(m1 == m3);
+  EXPECT_TRUE(m1 == m1);
+
+  m1.SetRows(3);
+  EXPECT_FALSE(m1 == m3);
+}
+
+TEST(Logic, NotEqual) {
+  double *m1_raw = new double[4]{1, -2, 3, -4};
+  double *m2_raw = new double[4]{1, 2, 3, 4};
+  S21Matrix m1(m1_raw, 2, 2);
+  S21Matrix m2(m2_raw, 2, 2);
+  S21Matrix m3 = m1;
+
+  EXPECT_TRUE(m1 != m2);
+  EXPECT_FALSE(m1 != m3);
+  EXPECT_FALSE(m1 != m1);
+
+  m1.SetRows(3);
+  EXPECT_TRUE(m1 != m3);
+}
+
 TEST(Setter, SetRow) {
   S21Matrix m(2, 3);
 
