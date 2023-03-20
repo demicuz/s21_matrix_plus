@@ -5,6 +5,11 @@
 
 class S21Matrix {
  private:
+  // For debug purposes
+  static const bool log_lifetimes = true;
+  static inline int new_id = 0;
+  const int id = ++new_id;
+
   int _rows = 4;
   int _cols = 4;
   // Could have used std::vector, but that would be too easy!
@@ -20,8 +25,12 @@ class S21Matrix {
   S21Matrix();
   S21Matrix(int rows, int cols);
   S21Matrix(const double matrix[], int rows, int cols);
+
+  // Copy constructor
   S21Matrix(const S21Matrix& other);
+  // Move constructor
   S21Matrix(S21Matrix&& other) noexcept;
+  // Destructor
   ~S21Matrix() noexcept;
 
   S21Matrix& operator+=(const S21Matrix& rhs);

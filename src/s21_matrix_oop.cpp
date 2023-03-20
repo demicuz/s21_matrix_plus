@@ -7,6 +7,7 @@
 // TODO more comprehensive exception messages?
 // I thought the call stack is printed to stderr, but that's not the case,
 // which is weird.
+
 // TODO fix wasteful exceptions?
 // Take a look at CalcComplements(), for example. It throws. It calls to,
 // Minor(), which also throws. Minor() calls to Determinant(), which also
@@ -41,7 +42,7 @@ S21Matrix::S21Matrix(int rows, int cols) {
     _matrix[i * _cols + i] = 1;
   }
 
-  // std::cout << "created!\n";
+  if (log_lifetimes) std::cerr << id << ": created!\n";
 }
 
 // The caller MUST provide correct matrix, rows and cols. Because we have no way
@@ -61,7 +62,7 @@ S21Matrix::S21Matrix(const double* matrix, int rows, int cols) {
   _cols = cols;
   _matrix = (double*)matrix;
 
-  // std::cout << "created!\n";
+  if (log_lifetimes) std::cerr << id << ": created!\n";
 }
 
 // Copy constructor
@@ -72,7 +73,7 @@ S21Matrix::S21Matrix(const S21Matrix& other) {
   _matrix = new double[static_cast<long>(_rows) * _cols]{};
   std::copy_n(other._matrix, _rows * _cols, _matrix);
 
-  // std::cout << "copied!\n";
+  if (log_lifetimes) std::cerr << id << ": copied!\n";
 }
 
 // Move constructor
@@ -85,13 +86,13 @@ S21Matrix::S21Matrix(S21Matrix&& other) noexcept {
   // other._cols = 0;
   other._matrix = nullptr;
 
-  // std::cout << "moved!\n";
+  if (log_lifetimes) std::cerr << id << ": moved!\n";
 }
 
 // Destructor
 S21Matrix::~S21Matrix() noexcept {
   delete[] _matrix;
-  // std::cout << "destroyed!\n";
+  if (log_lifetimes) std::cerr << id << ": destroyed!\n";
 }
 
 S21Matrix& S21Matrix::operator+=(const S21Matrix& rhs) {
