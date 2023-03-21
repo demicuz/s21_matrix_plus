@@ -13,12 +13,12 @@ class S21Matrix {
   int _rows = 4;
   int _cols = 4;
   // Could have used std::vector, but that would be too easy!
-  // NOTE: storing in a row-major format
+  // NOTE: storing in row-major format
   double* _matrix = new double[16]{};
 
   // Some helper computation functions
-  void subMatrix(const double* mat, double* tmp, int row_to_skip,
-                 int col_to_skip, int n) const;
+  void remove_row_col(const double* mat, int mat_size, double* tmp,
+                      int row_to_skip, int col_to_skip) const;
   double det(const double* mat, int n) const;
 
  public:

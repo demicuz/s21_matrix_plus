@@ -240,16 +240,16 @@ S21Matrix S21Matrix::Transpose() const {
 }
 
 // don't ask
-void S21Matrix::subMatrix(const double* mat, double* tmp, int row_to_skip,
-                          int col_to_skip, int n) const {
+void S21Matrix::remove_row_col(const double* mat, int mat_size, double* target,
+                               int row_to_skip, int col_to_skip) const {
   int i = 0;
 
-  for (int row = 0; row < n; ++row) {
+  for (int row = 0; row < mat_size; ++row) {
     if (row == row_to_skip) continue;
-    for (int col = 0; col < n; ++col) {
+    for (int col = 0; col < mat_size; ++col) {
       if (col == col_to_skip) continue;
-      // Row-major, remember. We're just filling tmp[] row by row.
-      tmp[i] = mat[row * n + col];
+      // Row-major, remember. We're just filling target[] row by row.
+      target[i] = mat[row * mat_size + col];
       i++;
     }
   }
@@ -266,7 +266,7 @@ double S21Matrix::det(const double* mat, int n) const {
   double* tmp = new double[static_cast<unsigned long>(n - 1) * (n - 1)]{};
   int sign = 1;
   for (int i = 0; i < n; ++i) {
-    subMatrix(mat, tmp, 0, i, n);
+    remove_row_col(mat, n, tmp, 0, i);
     determinant += sign * mat[i] * det(tmp, n - 1);
     sign = -sign;
   }
@@ -294,7 +294,7 @@ double S21Matrix::Minor(int row, int col) const {
   int n = _rows;
 
   double* tmp = new double[static_cast<unsigned long>(n - 1) * (n - 1)]{};
-  subMatrix(_matrix, tmp, row, col, n);
+  remove_row_col(_matrix, n, tmp, row, col);
 
   double minor = det(tmp, n - 1);
   delete[] tmp;
